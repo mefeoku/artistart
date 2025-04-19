@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kayıt Ol</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Kayıt Ol</h2>
+    <form id="signupForm">
+      <div class="input-container">
+        <input type="text" id="fullName" placeholder="Ad Soyad" required />
+      </div>
+      <div class="input-container">
+        <input type="email" id="signupEmail" placeholder="E-posta" required />
+      </div>
+      <div class="input-container">
+        <input type="password" id="signupPassword" placeholder="Şifre" required />
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="acceptPrivacy" required />
+        <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a></label>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="allowEmails" />
+        <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
+      </div>
+      <button type="submit">Kayıt Ol</button>
+      <p style="margin-top: 15px; text-align: center;">
+        Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
+      </p>
+    </form>
+  </div>
+
+  <script type="module" src="firebase/firebase-Config.js"></script>
+  <script type="module" src="firebase/signup.js"></script>
+</body>
+</html>

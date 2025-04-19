@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giriş Yap</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Giriş Yap</h2>
+    <form id="loginForm">
+      <div class="input-container">
+        <input type="email" id="loginEmail" placeholder="E-posta" required />
+      </div>
+      <div class="input-container">
+        <input type="password" id="loginPassword" placeholder="Şifre" required />
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="rememberMe" />
+        <label for="rememberMe">Beni hatırla</label>
+      </div>
+      <button type="submit">Giriş Yap</button>
+      <p style="margin-top: 15px; text-align: center;">
+        Hesabın yok mu? <a href="signup.html">Kayıt Ol</a>
+      </p>
+    </form>
+  </div>
+
+  <script type="module" src="firebase/firebase-Config.js"></script>
+  <script type="module" src="firebase/signup.js"></script> <!-- signup.js sadece signup sayfasında olmalı, burada login.js kullanılacak -->
+  <script type="module" src="firebase/login.js"></script> <!-- login.js, giriş işlemi için -->
+</body>
+</html>

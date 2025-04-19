@@ -1,0 +1,120 @@
+/* Genel Stil */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #1e1e1e; /* Koyu arka plan */
+  color: #f1f1f1; /* Açık yazı rengi */
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Form Container */
+.auth-container {
+  background-color: #333; /* Koyu gri zemin */
+  padding: 40px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #f2c94c; /* Pastel sarı renk */
+}
+
+/* Input alanları */
+.input-container {
+  margin-bottom: 20px;
+}
+
+.password-container {
+  position: relative;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #444; /* Koyu gri input arka plan */
+  border: 1px solid #666; /* Gri sınır */
+  border-radius: 5px;
+  color: #f1f1f1; /* Yazı rengi */
+}
+
+input:focus {
+  border-color: #f2c94c; /* Pastel sarı sınır */
+  outline: none;
+}
+
+/* Buton */
+button {
+  width: 100%;
+  padding: 14px;
+  background-color: #f2c94c; /* Pastel sarı buton */
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #1e1e1e; /* Koyu metin rengi */
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #e1b23c; /* Hover için koyu pastel sarı */
+}
+
+/* Link */
+a {
+  color: #f2c94c;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Şifreyi Göster butonu */
+#toggleLoginPassword {
+  background: none;
+  border: none;
+  color: #f2c94c;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  margin-top: 5px;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+#toggleLoginPassword:hover {
+  color: #e1b23c;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 30px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  button {
+    font-size: 14px;
+  }
+
+  input {
+    font-size: 14px;
+  }
+}
