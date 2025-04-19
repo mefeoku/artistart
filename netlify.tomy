@@ -1,0 +1,4 @@
+[build]
+  base = "./"  # Projenizin kök dizini
+  publish = "public"  # Yayınlanacak dizin
+  command = "npm run build"  # Build komutunu burada belirtin (eğer varsa)
