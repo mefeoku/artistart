@@ -1,9 +1,9 @@
+// Firebase ile gerekli işlemleri yapıyoruz
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
-import { toast } from 'react-toastify'; // Toastify import edin
-import 'react-toastify/dist/ReactToastify.css'; // CSS dosyasını ekleyin
 
+// React Toastify kullanımı için global `toast` nesnesini erişiyoruz
 const signupForm = document.getElementById('signupForm');
 signupForm.addEventListener('submit', (e) => {
   e.preventDefault();
@@ -23,7 +23,7 @@ signupForm.addEventListener('submit', (e) => {
         email: email,
       });
 
-      // Başarılı olduğunda toast göster ve yönlendir
+      // Başarılı olduğunda toast göster
       toast.success('Hesabınız başarıyla açıldı!');
       window.location.href = "index.html"; // Yönlendirme
     })
