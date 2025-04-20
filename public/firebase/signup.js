@@ -1,6 +1,8 @@
 import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { auth, db } from "./firebase-config.js";
+import { toast } from 'react-toastify'; // Toastify import edin
+import 'react-toastify/dist/ReactToastify.css'; // CSS dosyasını ekleyin
 
 const signupForm = document.getElementById('signupForm');
 signupForm.addEventListener('submit', (e) => {
@@ -21,11 +23,13 @@ signupForm.addEventListener('submit', (e) => {
         email: email,
       });
 
-      // Başarılıysa yönlendirme
-      window.location.href = "index.html";
+      // Başarılı olduğunda toast göster ve yönlendir
+      toast.success('Hesabınız başarıyla açıldı!');
+      window.location.href = "index.html"; // Yönlendirme
     })
     .catch((error) => {
       console.error("Hata:", error.message);
-      alert("Hata: " + error.message);
+      // Hata durumunda toast mesajı göster
+      toast.error('Kayıt işlemi başarısız! Hata: ' + error.message);
     });
 });
