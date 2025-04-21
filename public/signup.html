@@ -18,11 +18,11 @@
       </div>
       <div class="input-container">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <span id="togglePassword" class="toggle-icon">👁️</span>
+        <span id="togglePassword" class="toggle-icon">🙈</span> <!-- Gözünü Kapatan Maymun Emojisi -->
       </div>
       <div class="input-container">
         <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrarla" required />
-        <span id="toggleConfirmPassword" class="toggle-icon">👁️</span>
+        <span id="toggleConfirmPassword" class="toggle-icon">🙈</span> <!-- Gözünü Kapatan Maymun Emojisi -->
       </div>
       <div class="input-container">
         <input type="text" id="nickname" placeholder="Nickname" required />
@@ -56,8 +56,10 @@
     togglePasswordButton.addEventListener('click', function() {
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
+        togglePasswordButton.textContent = '🙉'; // Gözünü Açan Maymun Emojisi
       } else {
         passwordInput.type = 'password';
+        togglePasswordButton.textContent = '🙈'; // Gözünü Kapatan Maymun Emojisi
       }
     });
 
@@ -65,8 +67,10 @@
     toggleConfirmPasswordButton.addEventListener('click', function() {
       if (confirmPasswordInput.type === 'password') {
         confirmPasswordInput.type = 'text';
+        toggleConfirmPasswordButton.textContent = '🙉'; // Gözünü Açan Maymun Emojisi
       } else {
         confirmPasswordInput.type = 'password';
+        toggleConfirmPasswordButton.textContent = '🙈'; // Gözünü Kapatan Maymun Emojisi
       }
     });
   </script>
