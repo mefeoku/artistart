@@ -27,6 +27,7 @@
       <div class="input-container">
         <input type="text" id="nickname" placeholder="Nickname" required />
       </div>
+      <!-- Doğum tarihi sadece kullanıcı tarafından girilecek, fakat Firebase'e gönderilmeyecek -->
       <div class="input-container">
         <input type="date" id="birthDate" placeholder="Doğum Tarihi" required min="1900-01-01" max="2020-12-31" />
       </div>
@@ -82,15 +83,15 @@
       const email = document.getElementById('signupEmail').value;
       const password = document.getElementById('signupPassword').value;
       const nickname = document.getElementById('nickname').value;
-      const birthDate = document.getElementById('birthDate').value;
+      const birthDate = document.getElementById('birthDate').value; // Kullanıcıdan alınacak fakat Firebase'e gönderilmeyecek
 
       try {
         const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
         await firebase.firestore().collection('users').doc(userCredential.user.uid).set({
           fullName,
           email,
-          nickname,
-          birthDate
+          nickname
+          // Doğum tarihi burada kaydedilmiyor
         });
 
         showToast('Kullanıcı başarıyla eklendi!', 'success');
@@ -121,20 +122,5 @@
 
   <script type="module" src="firebase/firebase-Config.js"></script>
   <script type="module" src="firebase/signup.js"></script>
-  <script type="module" src="firebase/firebase-Config.js"></script>
-<script type="module" src="firebase/signup.js"></script>
-
-
-  <html>
-  <head>
-    <title>reCAPTCHA demo: Simple page</title>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  </head>
-  <body>
-    <form action="?" method="POST">
-      <div class="g-recaptcha" data-sitekey="your_site_key"></div>
-      <br/>
-      <input type="submit" value="Submit">
-    </form>
-  </body>
+</body>
 </html>
