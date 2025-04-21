@@ -18,10 +18,11 @@
       </div>
       <div class="input-container">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <button type="button" id="togglePassword" class="toggle-password">👁️</button>
+        <span id="togglePassword" class="toggle-icon">👁️</span>
       </div>
       <div class="input-container">
         <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrarla" required />
+        <span id="toggleConfirmPassword" class="toggle-icon">👁️</span>
       </div>
       <div class="input-container">
         <input type="text" id="nickname" placeholder="Nickname" required />
@@ -47,15 +48,24 @@
   <!-- Şifreyi Göster/Gizle Toggle -->
   <script type="module">
     const togglePasswordButton = document.getElementById('togglePassword');
+    const toggleConfirmPasswordButton = document.getElementById('toggleConfirmPassword');
     const passwordInput = document.getElementById('signupPassword');
     const confirmPasswordInput = document.getElementById('confirmPassword');
 
+    // Şifreyi Göster/Gizle işlevi
     togglePasswordButton.addEventListener('click', function() {
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        confirmPasswordInput.type = 'text';
       } else {
         passwordInput.type = 'password';
+      }
+    });
+
+    // Tekrar şifreyi Göster/Gizle işlevi
+    toggleConfirmPasswordButton.addEventListener('click', function() {
+      if (confirmPasswordInput.type === 'password') {
+        confirmPasswordInput.type = 'text';
+      } else {
         confirmPasswordInput.type = 'password';
       }
     });
