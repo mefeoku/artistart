@@ -40,7 +40,28 @@
         <input type="text" id="nickname" placeholder="Nickname" required />
       </div>
       <div class="input-container">
-        <input type="number" id="age" placeholder="Yaş" required />
+        <label for="dob">Doğum Tarihi:</label>
+        <select id="dob-day" required>
+          <option value="">Gün</option>
+        </select>
+        <select id="dob-month" required>
+          <option value="">Ay</option>
+          <option value="01">Ocak</option>
+          <option value="02">Şubat</option>
+          <option value="03">Mart</option>
+          <option value="04">Nisan</option>
+          <option value="05">Mayıs</option>
+          <option value="06">Haziran</option>
+          <option value="07">Temmuz</option>
+          <option value="08">Ağustos</option>
+          <option value="09">Eylül</option>
+          <option value="10">Ekim</option>
+          <option value="11">Kasım</option>
+          <option value="12">Aralık</option>
+        </select>
+        <select id="dob-year" required>
+          <option value="">Yıl</option>
+        </select>
       </div>
       <div class="input-container">
         <input type="email" id="signupEmail" placeholder="E-posta" required />
@@ -56,19 +77,14 @@
         <input type="checkbox" id="acceptPrivacy" required />
         <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a></label>
       </div>
-      <div class="checkbox-container">
-        <input type="checkbox" id="allowEmails" />
-        <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
-      </div>
-      <div class="checkbox-container">
-        <input type="checkbox" id="robotCheck" />
-        <label for="robotCheck">Ben robot değilim</label>
-      </div>
       <button type="submit">Kayıt Ol</button>
       <p style="margin-top: 15px; text-align: center;">
         Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
       </p>
     </form>
+
+    <!-- Google ile giriş butonu -->
+    <button id="googleSignIn">Google ile Giriş Yap</button>
   </div>
 
   <!-- Toast mesajı kutusu -->
@@ -84,14 +100,28 @@
     const confirmPasswordInput = document.getElementById('confirmPassword');
 
     toggleSignupPasswordButton.addEventListener('click', function() {
-      // Şifre alanı gizli mi gösteriliyor mu kontrol et
       if (signupPasswordInput.type === 'password') {
-        signupPasswordInput.type = 'text';  // Şifreyi metin olarak göster
-        toggleSignupPasswordButton.textContent = 'Şifreyi Gizle';  // Buton yazısını değiştir
+        signupPasswordInput.type = 'text';
+        toggleSignupPasswordButton.textContent = 'Şifreyi Gizle';
       } else {
-        signupPasswordInput.type = 'password';  // Şifreyi gizle
-        toggleSignupPasswordButton.textContent = 'Şifreyi Göster';  // Buton yazısını değiştir
+        signupPasswordInput.type = 'password';
+        toggleSignupPasswordButton.textContent = 'Şifreyi Göster';
       }
+    });
+
+    // Google ile giriş butonuna tıklama işlevi
+    document.getElementById("googleSignIn").addEventListener("click", function() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          console.log("Giriş başarılı:", user);
+          showToast("Google ile giriş başarılı!");
+        })
+        .catch((error) => {
+          console.log("Hata:", error.message);
+          showToast("Google ile girişte bir hata oluştu.");
+        });
     });
 
     // Toast mesajını gösterme fonksiyonu
@@ -101,7 +131,7 @@
       toast.classList.add("show");
       setTimeout(() => {
         toast.classList.remove("show");
-      }, 3000); // 3 saniye sonra kaybolur
+      }, 3000);
     }
 
     // Formu gönderme işlemi
@@ -113,8 +143,9 @@
       const confirmPassword = document.getElementById("confirmPassword").value;
       const fullName = document.getElementById("fullName").value;
       const nickname = document.getElementById("nickname").value;
-      const age = document.getElementById("age").value;
-      const isRobotChecked = document.getElementById("robotCheck").checked;
+      const dobDay = document.getElementById("dob-day").value;
+      const dobMonth = document.getElementById("dob-month").value;
+      const dobYear = document.getElementById("dob-year").value;
 
       // Şifrelerin uyumsuzluğu durumunda hata mesajı
       if (password !== confirmPassword) {
@@ -122,24 +153,38 @@
         return;
       }
 
-      // Robot değilim kontrolü
-      if (!isRobotChecked) {
-        showToast("Lütfen 'Ben robot değilim' kutusunu işaretleyin.");
-        return;
-      }
-
       // Firebase authentication işlemi (örnek)
       firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
-          // Kullanıcı kaydedildikten sonra başarı mesajı
           showToast("Kayıt başarılı! E-postanızı doğrulamak için mail gönderdik.");
           userCredential.user.sendEmailVerification();
         })
         .catch((error) => {
-          // Hata mesajı
           showToast("Kayıt sırasında bir hata oluştu: " + error.message);
         });
     });
+
+    // Doğum tarihi için gün, ay ve yıl seçeneklerini dinamik olarak oluşturma
+    window.onload = function() {
+      const daySelect = document.getElementById("dob-day");
+      const yearSelect = document.getElementById("dob-year");
+
+      // Gün seçenekleri (1-31)
+      for (let i = 1; i <= 31; i++) {
+        const option = document.createElement("option");
+        option.value = i < 10 ? "0" + i : i;
+        option.textContent = i;
+        daySelect.appendChild(option);
+      }
+
+      // Yıl seçenekleri (2025-1900)
+      for (let i = 2025; i >= 1900; i--) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        yearSelect.appendChild(option);
+      }
+    };
   </script>
 </body>
 </html>
