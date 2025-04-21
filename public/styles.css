@@ -142,3 +142,21 @@ a:hover {
 .auth-container form > *:nth-child(7) { animation-delay: 0.7s; }
 .auth-container form > *:nth-child(8) { animation-delay: 0.8s; }
 .auth-container form > *:nth-child(9) { animation-delay: 0.9s; }
+
+.password-requirements {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+.toggle-icon {
+  font-size: 12px;
+  cursor: pointer;
+  color: #333;
+  text-decoration: underline;
+}
+
+.toggle-icon:hover {
+  color: #007bff;
+}
+
