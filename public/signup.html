@@ -18,11 +18,43 @@
       font-size: 16px;
       user-select: none;
     }
+    /* Toast container düzenlemesi */
     .toast-container {
       position: fixed;
       top: 10px;
       right: 10px;
       z-index: 1000;
+      width: 300px; /* Konteyner genişliği */
+    }
+
+    /* Genel toast stil */
+    .toast {
+      background-color: #333;
+      color: white;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    /* Başarılı toast */
+    .toast.success {
+      background-color: #4CAF50;
+    }
+
+    /* Hatalı toast */
+    .toast.error {
+      background-color: #f44336;
+    }
+
+    /* Toast görünür olduğunda opaklık */
+    .toast.show {
+      opacity: 1;
     }
   </style>
 </head>
@@ -91,11 +123,18 @@
     // Toast bildirimi
     function showToast(message, type) {
       const toast = document.createElement('div');
-      toast.classList.add('toast');
-      toast.classList.add(type);
+      toast.classList.add('toast', type);
       toast.textContent = message;
       document.getElementById('toast-container').appendChild(toast);
-      setTimeout(() => toast.remove(), 5000); // 5 saniye sonra kaybolur
+
+      // Göstermeye başla
+      setTimeout(() => toast.classList.add('show'), 100);
+
+      // 5 saniye sonra kaybolacak
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 500); // Toast tamamen kaybolduktan sonra silinir
+      }, 5000);
     }
 
     // Kayıt işlemi ve toast
