@@ -27,19 +27,6 @@
       opacity: 1;
       bottom: 30px;
     }
-
-    /* Şifre göster/gizle butonu */
-    .password-container {
-      position: relative;
-    }
-
-    .show-password {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -50,11 +37,20 @@
         <input type="text" id="fullName" placeholder="Ad Soyad" required />
       </div>
       <div class="input-container">
+        <input type="text" id="nickname" placeholder="Nickname" required />
+      </div>
+      <div class="input-container">
+        <input type="number" id="age" placeholder="Yaş" required />
+      </div>
+      <div class="input-container">
         <input type="email" id="signupEmail" placeholder="E-posta" required />
       </div>
-      <div class="input-container password-container">
+      <div class="input-container">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <span id="togglePassword" class="show-password">👁️</span>
+        <button type="button" id="toggleSignupPassword">Şifreyi Göster</button>
+      </div>
+      <div class="input-container">
+        <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrar Girin" required />
       </div>
       <div class="checkbox-container">
         <input type="checkbox" id="acceptPrivacy" required />
@@ -63,6 +59,10 @@
       <div class="checkbox-container">
         <input type="checkbox" id="allowEmails" />
         <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="robotCheck" />
+        <label for="robotCheck">Ben robot değilim</label>
       </div>
       <button type="submit">Kayıt Ol</button>
       <p style="margin-top: 15px; text-align: center;">
@@ -78,6 +78,22 @@
   <script type="module" src="firebase/signup.js"></script>
 
   <script>
+    // Şifreyi Göster / Gizle işlevi - Signup sayfası
+    const toggleSignupPasswordButton = document.getElementById('toggleSignupPassword');
+    const signupPasswordInput = document.getElementById('signupPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+
+    toggleSignupPasswordButton.addEventListener('click', function() {
+      // Şifre alanı gizli mi gösteriliyor mu kontrol et
+      if (signupPasswordInput.type === 'password') {
+        signupPasswordInput.type = 'text';  // Şifreyi metin olarak göster
+        toggleSignupPasswordButton.textContent = 'Şifreyi Gizle';  // Buton yazısını değiştir
+      } else {
+        signupPasswordInput.type = 'password';  // Şifreyi gizle
+        toggleSignupPasswordButton.textContent = 'Şifreyi Göster';  // Buton yazısını değiştir
+      }
+    });
+
     // Toast mesajını gösterme fonksiyonu
     function showToast(message) {
       const toast = document.getElementById("toast");
@@ -88,25 +104,31 @@
       }, 3000); // 3 saniye sonra kaybolur
     }
 
-    // Şifreyi gösterme/gizleme işlemi
-    const togglePassword = document.getElementById("togglePassword");
-    const passwordInput = document.getElementById("signupPassword");
-
-    togglePassword.addEventListener("click", () => {
-      const type = passwordInput.type === "password" ? "text" : "password";
-      passwordInput.type = type;
-      togglePassword.textContent = type === "password" ? "👁️" : "🙈"; // Şifreyi göster/gizle simgesi
-    });
-
     // Formu gönderme işlemi
     document.getElementById("signupForm").addEventListener("submit", (e) => {
       e.preventDefault();
 
       const email = document.getElementById("signupEmail").value;
       const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
       const fullName = document.getElementById("fullName").value;
+      const nickname = document.getElementById("nickname").value;
+      const age = document.getElementById("age").value;
+      const isRobotChecked = document.getElementById("robotCheck").checked;
 
-      // Firebase authentication işlemi
+      // Şifrelerin uyumsuzluğu durumunda hata mesajı
+      if (password !== confirmPassword) {
+        showToast("Şifreler uyuşmuyor!");
+        return;
+      }
+
+      // Robot değilim kontrolü
+      if (!isRobotChecked) {
+        showToast("Lütfen 'Ben robot değilim' kutusunu işaretleyin.");
+        return;
+      }
+
+      // Firebase authentication işlemi (örnek)
       firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
           // Kullanıcı kaydedildikten sonra başarı mesajı
@@ -121,4 +143,3 @@
   </script>
 </body>
 </html>
-
