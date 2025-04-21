@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kayıt Ol</title>
   <link rel="stylesheet" href="styles.css" />
-<<<<<<< HEAD
   <style>
     .input-container {
       position: relative;
@@ -23,8 +22,6 @@
       padding-right: 35px; /* Emoji için boşluk */
     }
   </style>
-=======
->>>>>>> a2616a2 (guncelleme)
 </head>
 <body>
   <div class="auth-container">
@@ -38,17 +35,11 @@
       </div>
       <div class="input-container">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
-<<<<<<< HEAD
         <span id="togglePassword" class="toggle-icon">🙈</span>
       </div>
       <div class="input-container">
         <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrarla" required />
         <span id="toggleConfirmPassword" class="toggle-icon">🙈</span>
-=======
-      </div>
-      <div class="input-container">
-        <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrarla" required />
->>>>>>> a2616a2 (guncelleme)
       </div>
       <div class="input-container">
         <input type="text" id="nickname" placeholder="Nickname" required />
@@ -71,7 +62,6 @@
     </form>
   </div>
 
-<<<<<<< HEAD
   <script type="module">
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('signupPassword');
@@ -94,26 +84,6 @@
       } else {
         confirmInput.type = 'password';
         toggleConfirm.textContent = '🙈';
-=======
-  <!-- Şifreyi Göster/Gizle Toggle -->
-  <script type="module">
-    const togglePasswordButton = document.createElement('button');
-    togglePasswordButton.type = 'button';
-    togglePasswordButton.textContent = 'Şifreyi Göster';
-    document.querySelector('#signupPassword').insertAdjacentElement('afterend', togglePasswordButton);
-
-    togglePasswordButton.addEventListener('click', function() {
-      const passwordInput = document.getElementById('signupPassword');
-      const confirmPasswordInput = document.getElementById('confirmPassword');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        confirmPasswordInput.type = 'text';
-        togglePasswordButton.textContent = 'Şifreyi Gizle';
-      } else {
-        passwordInput.type = 'password';
-        confirmPasswordInput.type = 'password';
-        togglePasswordButton.textContent = 'Şifreyi Göster';
->>>>>>> a2616a2 (guncelleme)
       }
     });
   </script>
