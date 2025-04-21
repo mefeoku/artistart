@@ -1,126 +1,49 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kayıt Ol</title>
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    .input-container {
-      margin-bottom: 15px;
-    }
-    .date-picker-container {
-      display: flex;
-      gap: 10px;
-    }
-    .date-picker-container select {
-      flex: 1;
-      padding: 10px;
-      background-color: #1e1e1e;
-      color: #fff;
-      border: 1px solid #444;
-      border-radius: 5px;
-    }
-    .password-toggle {
-      position: relative;
-    }
-    .toggle-eye {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: #aaa;
-    }
-  </style>
-</head>
-<body>
-  <div class="auth-container">
-    <h2>Kayıt Ol</h2>
-    <form id="signupForm">
-      <div class="input-container">
-        <input type="text" id="fullName" placeholder="Ad Soyad" required />
-      </div>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { firebaseConfig } from "./firebase-Config.js";
 
-      <!-- Nickname -->
-      <div class="input-container">
-        <input type="text" id="nickname" placeholder="Kullanıcı Adı" required />
-      </div>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-      <!-- E-posta -->
-      <div class="input-container">
-        <input type="email" id="signupEmail" placeholder="E-posta" required />
-      </div>
+// Toast mesajı fonksiyonu
+function showToast(message) {
+  let toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
 
-      <!-- Doğum Tarihi -->
-      <div class="input-container date-picker-container">
-        <select id="birthDay" required>
-          <option value="">Gün</option>
-        </select>
-        <select id="birthMonth" required>
-          <option value="">Ay</option>
-        </select>
-        <select id="birthYear" required>
-          <option value="">Yıl</option>
-        </select>
-      </div>
+  toast.textContent = message;
+  toast.classList.add("show");
 
-      <!-- Şifre -->
-      <div class="input-container password-toggle">
-        <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <span class="toggle-eye" onclick="togglePassword('signupPassword', this)">👁️</span>
-      </div>
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+}
 
-      <!-- Tekrar Şifre -->
-      <div class="input-container password-toggle">
-        <input type="password" id="confirmPassword" placeholder="Tekrar Şifre" required />
-        <span class="toggle-eye" onclick="togglePassword('confirmPassword', this)">👁️</span>
-      </div>
+// Form gönderimi
+document.getElementById("signupForm").addEventListener("submit", (e) => {
+  e.preventDefault();
 
-      <div class="checkbox-container">
-        <input type="checkbox" id="acceptPrivacy" required />
-        <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a></label>
-      </div>
-      <div class="checkbox-container">
-        <input type="checkbox" id="allowEmails" />
-        <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
-      </div>
+  const email = document.getElementById("signupEmail").value;
+  const password = document.getElementById("signupPassword").value;
 
-      <button type="submit">Kayıt Ol</button>
-      <p style="margin-top: 15px; text-align: center;">
-        Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
-      </p>
-    </form>
-  </div>
-
-  <script type="module" src="firebase/firebase-Config.js"></script>
-  <script type="module" src="firebase/signup.js"></script>
-
-  <script>
-    // Toggle password visibility
-    function togglePassword(inputId, toggleIcon) {
-      const input = document.getElementById(inputId);
-      if (input.type === "password") {
-        input.type = "text";
-        toggleIcon.textContent = "🙈";
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      sendEmailVerification(userCredential.user)
+        .then(() => {
+          showToast("✅ Kayıt başarılı! Doğrulama e-postası gönderildi.");
+        });
+    })
+    .catch((error) => {
+      if (error.code === "auth/weak-password") {
+        showToast("⚠️ Şifre en az 6 karakter olmalı.");
+      } else if (error.code === "auth/email-already-in-use") {
+        showToast("⚠️ Bu e-posta zaten kullanılıyor.");
       } else {
-        input.type = "password";
-        toggleIcon.textContent = "👁️";
+        showToast("❌ Kayıt başarısız: " + error.message);
       }
-    }
-
-    // Gün / Ay / Yıl Doldur
-    const days = [...Array(31).keys()].map(i => i + 1);
-    const months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
-    const years = [...Array(100).keys()].map(i => new Date().getFullYear() - i);
-
-    const birthDay = document.getElementById("birthDay");
-    const birthMonth = document.getElementById("birthMonth");
-    const birthYear = document.getElementById("birthYear");
-
-    days.forEach(day => birthDay.add(new Option(day, day)));
-    months.forEach((month, i) => birthMonth.add(new Option(month, i + 1)));
-    years.forEach(year => birthYear.add(new Option(year, year)));
-  </script>
-</body>
-</html>
+    });
+});
