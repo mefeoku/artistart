@@ -27,6 +27,51 @@
       opacity: 1;
       bottom: 30px;
     }
+
+    /* Gün, ay, yıl seçimi için stil */
+    .date-picker-container {
+      display: flex;
+      justify-content: space-between;
+      background-color: #333; /* Siyah tonları */
+      border-radius: 5px;
+      padding: 10px;
+    }
+
+    .date-picker-container select {
+      background-color: #333;
+      color: #fff;
+      border: none;
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+    .input-container {
+      margin-bottom: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #f5d76e;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .checkbox-container {
+      margin: 10px 0;
+    }
+
+    .auth-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #1c1c1c;
+      border-radius: 10px;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -37,54 +82,47 @@
         <input type="text" id="fullName" placeholder="Ad Soyad" required />
       </div>
       <div class="input-container">
-        <input type="text" id="nickname" placeholder="Nickname" required />
-      </div>
-      <div class="input-container">
-        <label for="dob">Doğum Tarihi:</label>
-        <select id="dob-day" required>
-          <option value="">Gün</option>
-        </select>
-        <select id="dob-month" required>
-          <option value="">Ay</option>
-          <option value="01">Ocak</option>
-          <option value="02">Şubat</option>
-          <option value="03">Mart</option>
-          <option value="04">Nisan</option>
-          <option value="05">Mayıs</option>
-          <option value="06">Haziran</option>
-          <option value="07">Temmuz</option>
-          <option value="08">Ağustos</option>
-          <option value="09">Eylül</option>
-          <option value="10">Ekim</option>
-          <option value="11">Kasım</option>
-          <option value="12">Aralık</option>
-        </select>
-        <select id="dob-year" required>
-          <option value="">Yıl</option>
-        </select>
+        <input type="text" id="nickname" placeholder="Kullanıcı Adı" required />
       </div>
       <div class="input-container">
         <input type="email" id="signupEmail" placeholder="E-posta" required />
       </div>
       <div class="input-container">
-        <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <button type="button" id="toggleSignupPassword">Şifreyi Göster</button>
+        <div class="date-picker-container">
+          <select id="birthDay" required>
+            <option value="">Gün</option>
+            <!-- Gün seçenekleri burada olacak -->
+          </select>
+          <select id="birthMonth" required>
+            <option value="">Ay</option>
+            <!-- Ay seçenekleri burada olacak -->
+          </select>
+          <select id="birthYear" required>
+            <option value="">Yıl</option>
+            <!-- Yıl seçenekleri burada olacak -->
+          </select>
+        </div>
       </div>
       <div class="input-container">
-        <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrar Girin" required />
+        <input type="password" id="signupPassword" placeholder="Şifre" required />
+      </div>
+      <div class="input-container">
+        <input type="password" id="confirmPassword" placeholder="Tekrar Şifre" required />
+        <span id="passwordError" style="color: red; display: none;">Şifreler uyuşmuyor!</span>
       </div>
       <div class="checkbox-container">
         <input type="checkbox" id="acceptPrivacy" required />
         <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a></label>
+      </div>
+      <div class="checkbox-container">
+        <input type="checkbox" id="allowEmails" />
+        <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
       </div>
       <button type="submit">Kayıt Ol</button>
       <p style="margin-top: 15px; text-align: center;">
         Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
       </p>
     </form>
-
-    <!-- Google ile giriş butonu -->
-    <button id="googleSignIn">Google ile Giriş Yap</button>
   </div>
 
   <!-- Toast mesajı kutusu -->
@@ -94,36 +132,6 @@
   <script type="module" src="firebase/signup.js"></script>
 
   <script>
-    // Şifreyi Göster / Gizle işlevi - Signup sayfası
-    const toggleSignupPasswordButton = document.getElementById('toggleSignupPassword');
-    const signupPasswordInput = document.getElementById('signupPassword');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-
-    toggleSignupPasswordButton.addEventListener('click', function() {
-      if (signupPasswordInput.type === 'password') {
-        signupPasswordInput.type = 'text';
-        toggleSignupPasswordButton.textContent = 'Şifreyi Gizle';
-      } else {
-        signupPasswordInput.type = 'password';
-        toggleSignupPasswordButton.textContent = 'Şifreyi Göster';
-      }
-    });
-
-    // Google ile giriş butonuna tıklama işlevi
-    document.getElementById("googleSignIn").addEventListener("click", function() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider)
-        .then((result) => {
-          const user = result.user;
-          console.log("Giriş başarılı:", user);
-          showToast("Google ile giriş başarılı!");
-        })
-        .catch((error) => {
-          console.log("Hata:", error.message);
-          showToast("Google ile girişte bir hata oluştu.");
-        });
-    });
-
     // Toast mesajını gösterme fonksiyonu
     function showToast(message) {
       const toast = document.getElementById("toast");
@@ -131,7 +139,7 @@
       toast.classList.add("show");
       setTimeout(() => {
         toast.classList.remove("show");
-      }, 3000);
+      }, 3000); // 3 saniye sonra kaybolur
     }
 
     // Formu gönderme işlemi
@@ -142,49 +150,43 @@
       const password = document.getElementById("signupPassword").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
       const fullName = document.getElementById("fullName").value;
-      const nickname = document.getElementById("nickname").value;
-      const dobDay = document.getElementById("dob-day").value;
-      const dobMonth = document.getElementById("dob-month").value;
-      const dobYear = document.getElementById("dob-year").value;
 
-      // Şifrelerin uyumsuzluğu durumunda hata mesajı
       if (password !== confirmPassword) {
-        showToast("Şifreler uyuşmuyor!");
+        document.getElementById("passwordError").style.display = "block";
         return;
       }
 
       // Firebase authentication işlemi (örnek)
       firebase.auth().createUserWithEmailAndPassword(email, password)
         .then((userCredential) => {
+          // Kullanıcı kaydedildikten sonra başarı mesajı
           showToast("Kayıt başarılı! E-postanızı doğrulamak için mail gönderdik.");
           userCredential.user.sendEmailVerification();
         })
         .catch((error) => {
+          // Hata mesajı
           showToast("Kayıt sırasında bir hata oluştu: " + error.message);
         });
     });
 
-    // Doğum tarihi için gün, ay ve yıl seçeneklerini dinamik olarak oluşturma
-    window.onload = function() {
-      const daySelect = document.getElementById("dob-day");
-      const yearSelect = document.getElementById("dob-year");
+    // Gün, Ay, Yıl seçenekleri eklemek
+    const days = [...Array(31).keys()].map(i => i + 1);
+    const months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+    const years = [...Array(100).keys()].map(i => new Date().getFullYear() - i);
 
-      // Gün seçenekleri (1-31)
-      for (let i = 1; i <= 31; i++) {
-        const option = document.createElement("option");
-        option.value = i < 10 ? "0" + i : i;
-        option.textContent = i;
-        daySelect.appendChild(option);
-      }
+    const birthDaySelect = document.getElementById('birthDay');
+    const birthMonthSelect = document.getElementById('birthMonth');
+    const birthYearSelect = document.getElementById('birthYear');
 
-      // Yıl seçenekleri (2025-1900)
-      for (let i = 2025; i >= 1900; i--) {
-        const option = document.createElement("option");
-        option.value = i;
-        option.textContent = i;
-        yearSelect.appendChild(option);
-      }
-    };
+    days.forEach(day => {
+      birthDaySelect.add(new Option(day, day));
+    });
+    months.forEach((month, index) => {
+      birthMonthSelect.add(new Option(month, index + 1));
+    });
+    years.forEach(year => {
+      birthYearSelect.add(new Option(year, year));
+    });
   </script>
 </body>
 </html>
