@@ -18,11 +18,11 @@
       </div>
       <div class="input-container">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <button type="button" id="togglePassword" class="toggle-btn">Şifreyi Göster</button>
+        <span id="togglePassword" class="toggle-icon">Şifreyi Göster</span>
       </div>
       <div class="input-container">
         <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrarla" required />
-        <button type="button" id="toggleConfirmPassword" class="toggle-btn">Şifreyi Göster</button>
+        <span id="toggleConfirmPassword" class="toggle-icon">Şifreyi Göster</span>
       </div>
       <div class="input-container">
         <input type="text" id="nickname" placeholder="Nickname" required />
@@ -45,12 +45,14 @@
     </form>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/react-toastify/dist/ReactToastify.min.js"></script>
-  <script>
+  <!-- Toast container for success/failure -->
+  <div id="toast-container" style="position: fixed; right: 20px; top: 20px; z-index: 9999;"></div>
+
+  <script type="module">
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('signupPassword');
-    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const toggleConfirm = document.getElementById('toggleConfirmPassword');
+    const confirmInput = document.getElementById('confirmPassword');
 
     togglePassword.addEventListener('click', () => {
       if (passwordInput.type === 'password') {
@@ -62,33 +64,62 @@
       }
     });
 
-    toggleConfirmPassword.addEventListener('click', () => {
-      if (confirmPasswordInput.type === 'password') {
-        confirmPasswordInput.type = 'text';
-        toggleConfirmPassword.textContent = 'Şifreyi Gizle';
+    toggleConfirm.addEventListener('click', () => {
+      if (confirmInput.type === 'password') {
+        confirmInput.type = 'text';
+        toggleConfirm.textContent = 'Şifreyi Gizle';
       } else {
-        confirmPasswordInput.type = 'password';
-        toggleConfirmPassword.textContent = 'Şifreyi Göster';
+        confirmInput.type = 'password';
+        toggleConfirm.textContent = 'Şifreyi Göster';
       }
     });
 
-    const toastContainer = document.createElement('div');
-    toastContainer.className = 'toast-container';
-    document.body.appendChild(toastContainer);
+    // Firebase signup
+    document.getElementById('signupForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
 
-    const showToast = (message, type) => {
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      const nickname = document.getElementById('nickname').value;
+      const birthDate = document.getElementById('birthDate').value;
+
+      try {
+        const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+        await firebase.firestore().collection('users').doc(userCredential.user.uid).set({
+          fullName,
+          email,
+          nickname,
+          birthDate
+        });
+
+        showToast('Kullanıcı başarıyla eklendi!', 'success');
+      } catch (error) {
+        showToast(`Kullanıcı eklenemedi: ${error.message}`, 'error');
+      }
+    });
+
+    // Function to show toast
+    function showToast(message, type) {
+      const toastContainer = document.getElementById('toast-container');
       const toast = document.createElement('div');
-      toast.classList.add('toast', type);
       toast.textContent = message;
+      toast.style.backgroundColor = type === 'success' ? 'green' : 'red';
+      toast.style.color = 'white';
+      toast.style.padding = '10px 20px';
+      toast.style.marginBottom = '10px';
+      toast.style.borderRadius = '5px';
+      toast.style.fontSize = '16px';
+
       toastContainer.appendChild(toast);
+
       setTimeout(() => {
         toast.remove();
-      }, 5000);
-    };
-
-    // Örnek Toast mesajı
-    showToast('Kullanıcı başarıyla eklendi!', 'success');
-    showToast('Kullanıcı eklenemedi! Hata: <error code>', 'error');
+      }, 5000); // Remove toast after 5 seconds
+    }
   </script>
+
+  <script type="module" src="firebase/firebase-Config.js"></script>
+  <script type="module" src="firebase/signup.js"></script>
 </body>
 </html>
