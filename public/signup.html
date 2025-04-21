@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kayıt Ol</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/react-toastify/8.0.3/ReactToastify.min.css" rel="stylesheet">
   <style>
     .input-container {
       position: relative;
@@ -16,13 +15,14 @@
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
-      font-size: 18px;
+      font-size: 16px;
       user-select: none;
-      color: #007bff;
-      font-weight: bold;
     }
-    input[type="password"] {
-      padding-right: 100px; /* Şifreyi gösterme butonu için boşluk */
+    .toast-container {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
     }
   </style>
 </head>
@@ -48,11 +48,11 @@
         <input type="text" id="nickname" placeholder="Nickname" required />
       </div>
       <div class="input-container">
-        <input type="date" id="birthDate" placeholder="Doğum Tarihi" required min="1900-01-01" max="2023-12-31" />
+        <input type="date" id="birthDate" placeholder="Doğum Tarihi" required />
       </div>
       <div class="checkbox-container">
         <input type="checkbox" id="acceptPrivacy" required />
-        <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a></label>
+        <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum.</label>
       </div>
       <div class="checkbox-container">
         <input type="checkbox" id="allowEmails" />
@@ -65,72 +65,49 @@
     </form>
   </div>
 
-  <!-- React Toastify CDN -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-toastify/8.0.3/ReactToastify.min.js"></script>
+  <!-- Toast container -->
+  <div class="toast-container" id="toast-container"></div>
 
-  <script type="module">
-    // Toastify konfigürasyonu
-    const { ToastContainer, toast } = window.ReactToastify;
-
+  <script>
+    // Şifreyi Göster/Gizle işlevi
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('signupPassword');
-    const toggleConfirm = document.getElementById('toggleConfirmPassword');
-    const confirmInput = document.getElementById('confirmPassword');
+    const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
 
-    // Şifreyi Göster/Gizle işlemi
-    togglePassword.addEventListener('click', () => {
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        togglePassword.textContent = 'Şifreyi Gizle';
-        toast.success("Şifreyi Gösterdiniz!");  // Başarı bildirimi
+    function toggleVisibility(inputElement, toggleElement) {
+      if (inputElement.type === 'password') {
+        inputElement.type = 'text';
+        toggleElement.textContent = 'Şifreyi Gizle';
       } else {
-        passwordInput.type = 'password';
-        togglePassword.textContent = 'Şifreyi Göster';
-        toast.info("Şifreyi Gizlediniz!");  // Bilgilendirme bildirimi
+        inputElement.type = 'password';
+        toggleElement.textContent = 'Şifreyi Göster';
       }
-    });
+    }
 
-    // Şifreyi Tekrarla işlemi
-    toggleConfirm.addEventListener('click', () => {
-      if (confirmInput.type === 'password') {
-        confirmInput.type = 'text';
-        toggleConfirm.textContent = 'Şifreyi Gizle';
-        toast.success("Şifreyi Gösterdiniz!");  // Başarı bildirimi
-      } else {
-        confirmInput.type = 'password';
-        toggleConfirm.textContent = 'Şifreyi Göster';
-        toast.info("Şifreyi Gizlediniz!");  // Bilgilendirme bildirimi
-      }
-    });
+    togglePassword.addEventListener('click', () => toggleVisibility(passwordInput, togglePassword));
+    toggleConfirmPassword.addEventListener('click', () => toggleVisibility(confirmPasswordInput, toggleConfirmPassword));
 
-    // Form submit işlemi ve kullanıcı ekleme
+    // Toast bildirimi
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.classList.add('toast');
+      toast.classList.add(type);
+      toast.textContent = message;
+      document.getElementById('toast-container').appendChild(toast);
+      setTimeout(() => toast.remove(), 5000); // 5 saniye sonra kaybolur
+    }
+
+    // Kayıt işlemi ve toast
     document.getElementById('signupForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      // Varsayımsal bir işlem: Firebase kullanıcı ekleme
-      const isSuccess = true; // Başarı durumunu kontrol et (örnek)
       
-      if (isSuccess) {
-        toast.success("Kullanıcı başarıyla eklendi!");  // Başarı bildirimi
-      } else {
-        toast.error("Kullanıcı eklenemedi! Hata: <error_code>");  // Hata bildirimi
-      }
+      // Burada kayıt işlemi yapılacak ve başarılıysa toast gösterilecek
+      showToast('Kullanıcı başarıyla eklendi!', 'success');
+      
+      // Eğer bir hata varsa
+      // showToast('Kullanıcı eklenemedi! <error_code>', 'error');
     });
   </script>
-
-  <script type="module" src="firebase/firebase-Config.js"></script>
-  <script type="module" src="firebase/signup.js"></script>
-
-  <!-- ToastContainer, tüm bildirimler için konteyner -->
-  <ToastContainer 
-    position="top-right"
-    autoClose={5000}  // Bildirimlerin 5 saniye sonra kaybolması
-    hideProgressBar={false} 
-    newestOnTop={true} 
-    closeOnClick 
-    rtl={false} 
-    pauseOnFocusLoss 
-    draggable 
-    pauseOnHover
-  />
 </body>
 </html>
