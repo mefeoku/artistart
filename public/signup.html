@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kayıt Ol</title>
   <link rel="stylesheet" href="styles.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/react-toastify/8.0.3/ReactToastify.min.css" rel="stylesheet">
   <style>
     .input-container {
       position: relative;
@@ -17,9 +18,11 @@
       cursor: pointer;
       font-size: 18px;
       user-select: none;
+      color: #007bff;
+      font-weight: bold;
     }
     input[type="password"] {
-      padding-right: 35px; /* Emoji için boşluk */
+      padding-right: 100px; /* Şifreyi gösterme butonu için boşluk */
     }
   </style>
 </head>
@@ -35,11 +38,11 @@
       </div>
       <div class="input-container">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <span id="togglePassword" class="toggle-icon">🙈</span>
+        <span id="togglePassword" class="toggle-icon">Şifreyi Göster</span>
       </div>
       <div class="input-container">
         <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrarla" required />
-        <span id="toggleConfirmPassword" class="toggle-icon">🙈</span>
+        <span id="toggleConfirmPassword" class="toggle-icon">Şifreyi Göster</span>
       </div>
       <div class="input-container">
         <input type="text" id="nickname" placeholder="Nickname" required />
@@ -62,33 +65,72 @@
     </form>
   </div>
 
+  <!-- React Toastify CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-toastify/8.0.3/ReactToastify.min.js"></script>
+
   <script type="module">
+    // Toastify konfigürasyonu
+    const { ToastContainer, toast } = window.ReactToastify;
+
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('signupPassword');
+    const toggleConfirm = document.getElementById('toggleConfirmPassword');
+    const confirmInput = document.getElementById('confirmPassword');
+
+    // Şifreyi Göster/Gizle işlemi
     togglePassword.addEventListener('click', () => {
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        togglePassword.textContent = '🙉'; // Şifreyi göster
+        togglePassword.textContent = 'Şifreyi Gizle';
+        toast.success("Şifreyi Gösterdiniz!");  // Başarı bildirimi
       } else {
         passwordInput.type = 'password';
-        togglePassword.textContent = '🙈'; // Şifreyi gizle
+        togglePassword.textContent = 'Şifreyi Göster';
+        toast.info("Şifreyi Gizlediniz!");  // Bilgilendirme bildirimi
       }
     });
 
-    const toggleConfirm = document.getElementById('toggleConfirmPassword');
-    const confirmInput = document.getElementById('confirmPassword');
+    // Şifreyi Tekrarla işlemi
     toggleConfirm.addEventListener('click', () => {
       if (confirmInput.type === 'password') {
         confirmInput.type = 'text';
-        toggleConfirm.textContent = '🙉'; // Şifreyi göster
+        toggleConfirm.textContent = 'Şifreyi Gizle';
+        toast.success("Şifreyi Gösterdiniz!");  // Başarı bildirimi
       } else {
         confirmInput.type = 'password';
-        toggleConfirm.textContent = '🙈'; // Şifreyi gizle
+        toggleConfirm.textContent = 'Şifreyi Göster';
+        toast.info("Şifreyi Gizlediniz!");  // Bilgilendirme bildirimi
+      }
+    });
+
+    // Form submit işlemi ve kullanıcı ekleme
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Varsayımsal bir işlem: Firebase kullanıcı ekleme
+      const isSuccess = true; // Başarı durumunu kontrol et (örnek)
+      
+      if (isSuccess) {
+        toast.success("Kullanıcı başarıyla eklendi!");  // Başarı bildirimi
+      } else {
+        toast.error("Kullanıcı eklenemedi! Hata: <error_code>");  // Hata bildirimi
       }
     });
   </script>
 
   <script type="module" src="firebase/firebase-Config.js"></script>
   <script type="module" src="firebase/signup.js"></script>
+
+  <!-- ToastContainer, tüm bildirimler için konteyner -->
+  <ToastContainer 
+    position="top-right"
+    autoClose={5000}  // Bildirimlerin 5 saniye sonra kaybolması
+    hideProgressBar={false} 
+    newestOnTop={true} 
+    closeOnClick 
+    rtl={false} 
+    pauseOnFocusLoss 
+    draggable 
+    pauseOnHover
+  />
 </body>
 </html>
