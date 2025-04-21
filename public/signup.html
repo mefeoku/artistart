@@ -6,71 +6,31 @@
   <title>Kayıt Ol</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Toast mesajları için temel stil */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #f5d76e;
-      color: #000;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 16px;
-      display: none;
-      opacity: 0;
-      transition: opacity 0.5s, bottom 0.5s;
-    }
-
-    .toast.show {
-      display: block;
-      opacity: 1;
-      bottom: 30px;
-    }
-
-    /* Gün, ay, yıl seçimi için stil */
-    .date-picker-container {
-      display: flex;
-      justify-content: space-between;
-      background-color: #333; /* Siyah tonları */
-      border-radius: 5px;
-      padding: 10px;
-    }
-
-    .date-picker-container select {
-      background-color: #333;
-      color: #fff;
-      border: none;
-      padding: 8px;
-      font-size: 16px;
-      border-radius: 5px;
-    }
-
     .input-container {
       margin-bottom: 15px;
     }
-
-    button {
-      width: 100%;
+    .date-picker-container {
+      display: flex;
+      gap: 10px;
+    }
+    .date-picker-container select {
+      flex: 1;
       padding: 10px;
-      background-color: #f5d76e;
-      color: #333;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-
-    .checkbox-container {
-      margin: 10px 0;
-    }
-
-    .auth-container {
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #1c1c1c;
-      border-radius: 10px;
+      background-color: #1e1e1e;
       color: #fff;
+      border: 1px solid #444;
+      border-radius: 5px;
+    }
+    .password-toggle {
+      position: relative;
+    }
+    .toggle-eye {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #aaa;
     }
   </style>
 </head>
@@ -81,35 +41,42 @@
       <div class="input-container">
         <input type="text" id="fullName" placeholder="Ad Soyad" required />
       </div>
+
+      <!-- Nickname -->
       <div class="input-container">
         <input type="text" id="nickname" placeholder="Kullanıcı Adı" required />
       </div>
+
+      <!-- E-posta -->
       <div class="input-container">
         <input type="email" id="signupEmail" placeholder="E-posta" required />
       </div>
-      <div class="input-container">
-        <div class="date-picker-container">
-          <select id="birthDay" required>
-            <option value="">Gün</option>
-            <!-- Gün seçenekleri burada olacak -->
-          </select>
-          <select id="birthMonth" required>
-            <option value="">Ay</option>
-            <!-- Ay seçenekleri burada olacak -->
-          </select>
-          <select id="birthYear" required>
-            <option value="">Yıl</option>
-            <!-- Yıl seçenekleri burada olacak -->
-          </select>
-        </div>
+
+      <!-- Doğum Tarihi -->
+      <div class="input-container date-picker-container">
+        <select id="birthDay" required>
+          <option value="">Gün</option>
+        </select>
+        <select id="birthMonth" required>
+          <option value="">Ay</option>
+        </select>
+        <select id="birthYear" required>
+          <option value="">Yıl</option>
+        </select>
       </div>
-      <div class="input-container">
+
+      <!-- Şifre -->
+      <div class="input-container password-toggle">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
+        <span class="toggle-eye" onclick="togglePassword('signupPassword', this)">👁️</span>
       </div>
-      <div class="input-container">
+
+      <!-- Tekrar Şifre -->
+      <div class="input-container password-toggle">
         <input type="password" id="confirmPassword" placeholder="Tekrar Şifre" required />
-        <span id="passwordError" style="color: red; display: none;">Şifreler uyuşmuyor!</span>
+        <span class="toggle-eye" onclick="togglePassword('confirmPassword', this)">👁️</span>
       </div>
+
       <div class="checkbox-container">
         <input type="checkbox" id="acceptPrivacy" required />
         <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a></label>
@@ -118,6 +85,7 @@
         <input type="checkbox" id="allowEmails" />
         <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
       </div>
+
       <button type="submit">Kayıt Ol</button>
       <p style="margin-top: 15px; text-align: center;">
         Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
@@ -125,68 +93,34 @@
     </form>
   </div>
 
-  <!-- Toast mesajı kutusu -->
-  <div id="toast" class="toast"></div>
-
   <script type="module" src="firebase/firebase-Config.js"></script>
   <script type="module" src="firebase/signup.js"></script>
 
   <script>
-    // Toast mesajını gösterme fonksiyonu
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.classList.add("show");
-      setTimeout(() => {
-        toast.classList.remove("show");
-      }, 3000); // 3 saniye sonra kaybolur
+    // Toggle password visibility
+    function togglePassword(inputId, toggleIcon) {
+      const input = document.getElementById(inputId);
+      if (input.type === "password") {
+        input.type = "text";
+        toggleIcon.textContent = "🙈";
+      } else {
+        input.type = "password";
+        toggleIcon.textContent = "👁️";
+      }
     }
 
-    // Formu gönderme işlemi
-    document.getElementById("signupForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-      const fullName = document.getElementById("fullName").value;
-
-      if (password !== confirmPassword) {
-        document.getElementById("passwordError").style.display = "block";
-        return;
-      }
-
-      // Firebase authentication işlemi (örnek)
-      firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          // Kullanıcı kaydedildikten sonra başarı mesajı
-          showToast("Kayıt başarılı! E-postanızı doğrulamak için mail gönderdik.");
-          userCredential.user.sendEmailVerification();
-        })
-        .catch((error) => {
-          // Hata mesajı
-          showToast("Kayıt sırasında bir hata oluştu: " + error.message);
-        });
-    });
-
-    // Gün, Ay, Yıl seçenekleri eklemek
+    // Gün / Ay / Yıl Doldur
     const days = [...Array(31).keys()].map(i => i + 1);
     const months = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
     const years = [...Array(100).keys()].map(i => new Date().getFullYear() - i);
 
-    const birthDaySelect = document.getElementById('birthDay');
-    const birthMonthSelect = document.getElementById('birthMonth');
-    const birthYearSelect = document.getElementById('birthYear');
+    const birthDay = document.getElementById("birthDay");
+    const birthMonth = document.getElementById("birthMonth");
+    const birthYear = document.getElementById("birthYear");
 
-    days.forEach(day => {
-      birthDaySelect.add(new Option(day, day));
-    });
-    months.forEach((month, index) => {
-      birthMonthSelect.add(new Option(month, index + 1));
-    });
-    years.forEach(year => {
-      birthYearSelect.add(new Option(year, year));
-    });
+    days.forEach(day => birthDay.add(new Option(day, day)));
+    months.forEach((month, i) => birthMonth.add(new Option(month, i + 1)));
+    years.forEach(year => birthYear.add(new Option(year, year)));
   </script>
 </body>
 </html>
