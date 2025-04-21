@@ -68,10 +68,10 @@
     togglePassword.addEventListener('click', () => {
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        togglePassword.textContent = '🙉';
+        togglePassword.textContent = '🙉'; // Şifreyi göster
       } else {
         passwordInput.type = 'password';
-        togglePassword.textContent = '🙈';
+        togglePassword.textContent = '🙈'; // Şifreyi gizle
       }
     });
 
@@ -80,10 +80,10 @@
     toggleConfirm.addEventListener('click', () => {
       if (confirmInput.type === 'password') {
         confirmInput.type = 'text';
-        toggleConfirm.textContent = '🙉';
+        toggleConfirm.textContent = '🙉'; // Şifreyi göster
       } else {
         confirmInput.type = 'password';
-        toggleConfirm.textContent = '🙈';
+        toggleConfirm.textContent = '🙈'; // Şifreyi gizle
       }
     });
   </script>
