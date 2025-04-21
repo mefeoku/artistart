@@ -11,7 +11,7 @@ signupForm.addEventListener('submit', (e) => {
   const password = document.getElementById('signupPassword').value;
   const fullName = document.getElementById('fullName').value;
   const nickname = document.getElementById('nickname').value;
-  const dob = document.getElementById('dob').value;  // Doğum tarihi (gün, ay, yıl)
+
 
   // Firebase kullanıcı oluşturma işlemi
   createUserWithEmailAndPassword(auth, email, password)
