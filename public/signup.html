@@ -1,49 +1,182 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-import { firebaseConfig } from "./firebase-Config.js";
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kayıt Ol</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .input-container {
+      margin-bottom: 15px;
+    }
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    .input-container input, .input-container select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background-color: #222;
+      color: #fff;
+      font-size: 16px;
+    }
 
-// Toast mesajı fonksiyonu
-function showToast(message) {
-  let toast = document.getElementById("toast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "toast";
-    toast.className = "toast";
-    document.body.appendChild(toast);
-  }
+    .toggle {
+      margin-top: 5px;
+      cursor: pointer;
+      color: #ccc;
+      font-size: 14px;
+    }
 
-  toast.textContent = message;
-  toast.classList.add("show");
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #f5d76e;
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s, bottom 0.5s;
+    }
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
-}
+    .toast.show {
+      display: block;
+      opacity: 1;
+      bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Kayıt Ol</h2>
+    <form id="signupForm">
+      <div class="input-container">
+        <input type="text" id="fullName" placeholder="Ad Soyad" required />
+      </div>
 
-// Form gönderimi
-document.getElementById("signupForm").addEventListener("submit", (e) => {
-  e.preventDefault();
+      <div class="input-container">
+        <input type="text" id="nickname" placeholder="Kullanıcı Adı" required />
+      </div>
 
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
+      <div class="input-container">
+        <select id="birthDay" required>
+          <option value="" disabled selected>Gün</option>
+          ${[...Array(31).keys()].map(i => `<option value="${i+1}">${i+1}</option>`).join('')}
+        </select>
+      </div>
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      sendEmailVerification(userCredential.user)
-        .then(() => {
-          showToast("✅ Kayıt başarılı! Doğrulama e-postası gönderildi.");
-        });
-    })
-    .catch((error) => {
-      if (error.code === "auth/weak-password") {
-        showToast("⚠️ Şifre en az 6 karakter olmalı.");
-      } else if (error.code === "auth/email-already-in-use") {
-        showToast("⚠️ Bu e-posta zaten kullanılıyor.");
-      } else {
-        showToast("❌ Kayıt başarısız: " + error.message);
-      }
+      <div class="input-container">
+        <select id="birthMonth" required>
+          <option value="" disabled selected>Ay</option>
+          <option value="Ocak">Ocak</option>
+          <option value="Şubat">Şubat</option>
+          <option value="Mart">Mart</option>
+          <option value="Nisan">Nisan</option>
+          <option value="Mayıs">Mayıs</option>
+          <option value="Haziran">Haziran</option>
+          <option value="Temmuz">Temmuz</option>
+          <option value="Ağustos">Ağustos</option>
+          <option value="Eylül">Eylül</option>
+          <option value="Ekim">Ekim</option>
+          <option value="Kasım">Kasım</option>
+          <option value="Aralık">Aralık</option>
+        </select>
+      </div>
+
+      <div class="input-container">
+        <select id="birthYear" required>
+          <option value="" disabled selected>Yıl</option>
+          ${[...Array(100).keys()].map(i => {
+            const year = new Date().getFullYear() - i;
+            return `<option value="${year}">${year}</option>`;
+          }).join('')}
+        </select>
+      </div>
+
+      <div class="input-container">
+        <input type="email" id="signupEmail" placeholder="E-posta (Gmail)" required />
+      </div>
+
+      <div class="input-container">
+        <input type="password" id="signupPassword" placeholder="Şifre" required />
+        <div class="toggle" id="togglePassword">Şifreyi Göster</div>
+      </div>
+
+      <div class="input-container">
+        <input type="password" id="confirmPassword" placeholder="Şifre Tekrar" required />
+      </div>
+
+      <div class="checkbox-container">
+        <input type="checkbox" id="acceptPrivacy" required />
+        <label for="acceptPrivacy">
+          Gizlilik koşullarını kabul ediyorum.
+          <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a>
+        </label>
+      </div>
+
+      <div class="checkbox-container">
+        <input type="checkbox" id="allowEmails" />
+        <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
+      </div>
+
+      <button type="submit">Kayıt Ol</button>
+
+      <p style="margin-top: 15px; text-align: center;">
+        Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- Toast mesaj kutusu -->
+  <div id="toast" class="toast"></div>
+
+  <script type="module" src="firebase/firebase-Config.js"></script>
+  <script type="module" src="firebase/signup.js"></script>
+
+  <script>
+    // Şifreyi göster/gizle
+    const toggleBtn = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("signupPassword");
+
+    toggleBtn.addEventListener("click", () => {
+      const isVisible = passwordInput.type === "text";
+      passwordInput.type = isVisible ? "password" : "text";
+      toggleBtn.textContent = isVisible ? "Şifreyi Göster" : "Şifreyi Gizle";
     });
-});
+
+    // Toast gösterme fonksiyonu
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+
+    // Form submit kontrolü
+    document.getElementById("signupForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (password !== confirmPassword) {
+        showToast("Şifreler uyuşmuyor.");
+        return;
+      }
+
+      import("./firebase/signup.js")
+        .then(module => {
+          module.signupUser(email, password, showToast);
+        })
+        .catch(err => {
+          showToast("Bir hata oluştu.");
+          console.error(err);
+        });
+    });
+  </script>
+</body>
+</html>
