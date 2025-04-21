@@ -5,6 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kayıt Ol</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .input-container {
+      position: relative;
+    }
+    .toggle-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      user-select: none;
+    }
+    input[type="password"] {
+      padding-right: 35px; /* Emoji için boşluk */
+    }
+  </style>
 </head>
 <body>
   <div class="auth-container">
@@ -18,11 +35,11 @@
       </div>
       <div class="input-container">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <span id="togglePassword" class="toggle-icon">🙈</span> <!-- Gözünü Kapatan Maymun Emojisi -->
+        <span id="togglePassword" class="toggle-icon">🙈</span>
       </div>
       <div class="input-container">
         <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrarla" required />
-        <span id="toggleConfirmPassword" class="toggle-icon">🙈</span> <!-- Gözünü Kapatan Maymun Emojisi -->
+        <span id="toggleConfirmPassword" class="toggle-icon">🙈</span>
       </div>
       <div class="input-container">
         <input type="text" id="nickname" placeholder="Nickname" required />
@@ -45,32 +62,28 @@
     </form>
   </div>
 
-  <!-- Şifreyi Göster/Gizle Toggle -->
   <script type="module">
-    const togglePasswordButton = document.getElementById('togglePassword');
-    const toggleConfirmPasswordButton = document.getElementById('toggleConfirmPassword');
+    const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('signupPassword');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-
-    // Şifreyi Göster/Gizle işlevi
-    togglePasswordButton.addEventListener('click', function() {
+    togglePassword.addEventListener('click', () => {
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
-        togglePasswordButton.textContent = '🙉'; // Gözünü Açan Maymun Emojisi
+        togglePassword.textContent = '🙉';
       } else {
         passwordInput.type = 'password';
-        togglePasswordButton.textContent = '🙈'; // Gözünü Kapatan Maymun Emojisi
+        togglePassword.textContent = '🙈';
       }
     });
 
-    // Tekrar şifreyi Göster/Gizle işlevi
-    toggleConfirmPasswordButton.addEventListener('click', function() {
-      if (confirmPasswordInput.type === 'password') {
-        confirmPasswordInput.type = 'text';
-        toggleConfirmPasswordButton.textContent = '🙉'; // Gözünü Açan Maymun Emojisi
+    const toggleConfirm = document.getElementById('toggleConfirmPassword');
+    const confirmInput = document.getElementById('confirmPassword');
+    toggleConfirm.addEventListener('click', () => {
+      if (confirmInput.type === 'password') {
+        confirmInput.type = 'text';
+        toggleConfirm.textContent = '🙉';
       } else {
-        confirmPasswordInput.type = 'password';
-        toggleConfirmPasswordButton.textContent = '🙈'; // Gözünü Kapatan Maymun Emojisi
+        confirmInput.type = 'password';
+        toggleConfirm.textContent = '🙈';
       }
     });
   </script>
