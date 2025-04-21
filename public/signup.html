@@ -18,6 +18,7 @@
       </div>
       <div class="input-container">
         <input type="password" id="signupPassword" placeholder="Şifre" required />
+        <button type="button" id="togglePassword" class="toggle-password">👁️</button>
       </div>
       <div class="input-container">
         <input type="password" id="confirmPassword" placeholder="Şifreyi Tekrarla" required />
@@ -45,22 +46,17 @@
 
   <!-- Şifreyi Göster/Gizle Toggle -->
   <script type="module">
-    const togglePasswordButton = document.createElement('button');
-    togglePasswordButton.type = 'button';
-    togglePasswordButton.textContent = 'Şifreyi Göster';
-    document.querySelector('#signupPassword').insertAdjacentElement('afterend', togglePasswordButton);
+    const togglePasswordButton = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('signupPassword');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
 
     togglePasswordButton.addEventListener('click', function() {
-      const passwordInput = document.getElementById('signupPassword');
-      const confirmPasswordInput = document.getElementById('confirmPassword');
       if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         confirmPasswordInput.type = 'text';
-        togglePasswordButton.textContent = 'Şifreyi Gizle';
       } else {
         passwordInput.type = 'password';
         confirmPasswordInput.type = 'password';
-        togglePasswordButton.textContent = 'Şifreyi Göster';
       }
     });
   </script>
