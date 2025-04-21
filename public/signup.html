@@ -1,48 +1,106 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kayıt Ol</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-  <div class="auth-container">
-    <h2>Kayıt Ol</h2>
-    <form id="signupForm">
-      <div class="input-container">
-        <input type="text" id="fullName" placeholder="Ad Soyad" required />
-      </div>
-      <div class="input-container">
-        <input type="text" id="nickname" placeholder="Nickname" required />
-      </div>
-      <div class="input-container">
-        <input type="email" id="signupEmail" placeholder="E-posta" required />
-      </div>
-      <div class="input-container">
-        <input type="password" id="signupPassword" placeholder="Şifre" required />
-        <button type="button" id="togglePassword">Şifreyi Göster</button> <!-- Toggle buton -->
-      </div>
-      <div class="input-container">
-        <label for="dob">Doğum Tarihi</label>
-        <input type="date" id="dob" required />
-      </div>
-      <div class="checkbox-container">
-        <input type="checkbox" id="acceptPrivacy" required />
-        <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a></label>
-      </div>
-      <div class="checkbox-container">
-        <input type="checkbox" id="allowEmails" />
-        <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
-      </div>
-      <button type="submit">Kayıt Ol</button>
-      <p style="margin-top: 15px; text-align: center;">
-        Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
-      </p>
-    </form>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kayıt Ol</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="auth-container">
+      <h2>Kayıt Ol</h2>
+      <form id="signupForm">
+        <div class="input-container">
+          <input type="text" id="fullName" placeholder="Ad Soyad" required />
+        </div>
+        <div class="input-container">
+          <input type="email" id="signupEmail" placeholder="E-posta" required />
+        </div>
+        <div class="input-container">
+          <input type="password" id="signupPassword" placeholder="Şifre" required />
+          <button type="button" id="togglePassword">Şifreyi Göster</button> <!-- Toggle için buton ekledim -->
+        </div>
+        <div class="input-container">
+          <input type="password" id="confirmPassword" placeholder="Şifreyi Onayla" required />
+        </div>
+        <div class="input-container">
+          <!-- Gün, Ay, Yıl için seçici alan -->
+          <input type="text" id="dobDay" placeholder="Gün" required />
+          <input type="text" id="dobMonth" placeholder="Ay" required />
+          <input type="text" id="dobYear" placeholder="Yıl (4 haneli)" maxlength="4" required />
+        </div>
+        <div class="checkbox-container">
+          <input type="checkbox" id="acceptPrivacy" required />
+          <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="gizlilik.html" target="_blank">Gizlilik Koşulları</a></label>
+        </div>
+        <div class="checkbox-container">
+          <input type="checkbox" id="allowEmails" />
+          <label for="allowEmails">E-posta gönderilmesine izin veriyorum</label>
+        </div>
+        <button type="submit">Kayıt Ol</button>
+        <p style="margin-top: 15px; text-align: center;">
+          Zaten hesabın var mı? <a href="index.html">Giriş Yap</a>
+        </p>
+      </form>
+    </div>
 
-  <script type="module" src="firebase/firebase-Config.js"></script>
-  <script type="module" src="firebase/signup.js"></script>
-</body>
+    <script type="module" src="firebase/firebase-Config.js"></script>
+    <script type="module" src="firebase/signup.js"></script>
+
+    <script>
+      // Toggle şifreyi göster/gizle
+      document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordField = document.getElementById('signupPassword');
+        const confirmPasswordField = document.getElementById('confirmPassword');
+        const type = passwordField.type === 'password' ? 'text' : 'password';
+        passwordField.type = type;
+        confirmPasswordField.type = type;
+        this.textContent = type === 'password' ? 'Şifreyi Göster' : 'Şifreyi Gizle';
+      });
+
+      // Formu gönderme işlemi
+      const signupForm = document.getElementById('signupForm');
+      signupForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const email = document.getElementById('signupEmail').value;
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const fullName = document.getElementById('fullName').value;
+        const dobDay = document.getElementById('dobDay').value;
+        const dobMonth = document.getElementById('dobMonth').value;
+        const dobYear = document.getElementById('dobYear').value;
+
+        // Şifrelerin uyuştuğundan emin olalım
+        if (password !== confirmPassword) {
+          alert('Şifreler uyuşmuyor!');
+          return;
+        }
+
+        // Firebase işlemleri
+        createUserWithEmailAndPassword(auth, email, password)
+          .then(async (userCredential) => {
+            const user = userCredential.user;
+
+            // Firestore'a ek bilgiler kaydedelim
+            await setDoc(doc(db, 'users', user.uid), {
+              fullName: fullName,
+              email: email,
+              dob: {
+                day: dobDay,
+                month: dobMonth,
+                year: dobYear
+              },
+            });
+
+            toast.success('Hesabınız başarıyla açıldı!');
+            window.location.href = "index.html"; // Yönlendirme
+          })
+          .catch((error) => {
+            console.error("Hata:", error.message);
+            toast.error('Kayıt işlemi başarısız! Hata: ' + error.message);
+          });
+      });
+    </script>
+  </body>
 </html>
