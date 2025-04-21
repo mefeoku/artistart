@@ -77,3 +77,68 @@ a:hover {
   font-size: 13px;
   color: #ccc;
 }
+
+.input-container {
+  position: relative;
+}
+
+.toggle-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  user-select: none;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  pointer-events: auto;
+  color: #ccc;
+}
+
+.toggle-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.toggle-icon:hover {
+  transform: translateY(-50%) scale(1.2);
+  color: #ffd700; /* Pastel sarı gibi */
+}
+
+/* Giriş animasyonu */
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bütün input-container, checkbox ve butonlara uygulayalım */
+.auth-container form > * {
+  animation: fadeSlideIn 0.6s ease forwards;
+  opacity: 0;
+}
+
+/* Her biri sırasıyla biraz gecikmeli gelsin */
+.auth-container form > *:nth-child(1) { animation-delay: 0.1s; }
+.auth-container form > *:nth-child(2) { animation-delay: 0.2s; }
+.auth-container form > *:nth-child(3) { animation-delay: 0.3s; }
+.auth-container form > *:nth-child(4) { animation-delay: 0.4s; }
+.auth-container form > *:nth-child(5) { animation-delay: 0.5s; }
+.auth-container form > *:nth-child(6) { animation-delay: 0.6s; }
+.auth-container form > *:nth-child(7) { animation-delay: 0.7s; }
+.auth-container form > *:nth-child(8) { animation-delay: 0.8s; }
+.auth-container form > *:nth-child(9) { animation-delay: 0.9s; }
