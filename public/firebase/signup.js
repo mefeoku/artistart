@@ -10,20 +10,23 @@
   --text-dark: #333333; /* Koyu yazı */
   --border-color: rgba(255, 238, 147, 0.15); /* Sarı border */
 }
-
 body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', system-ui, sans-serif;
-  background-color: var(--bg-dark);
+  background: linear-gradient(-45deg, #0D0D0D, #FFEE93, #0D0D0D);
+  background-size: 400% 400%;
+  animation: animateBG 10s ease infinite;
   color: var(--text-light);
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(255,238,147,0.05) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(255,238,147,0.05) 0%, transparent 50%);
+}
+@keyframes animateBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 /* AUTH CONTAINER */
