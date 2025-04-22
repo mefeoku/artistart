@@ -1,124 +1,244 @@
+/* TEMEL STİLLER */
+:root {
+  --bg-dark: #121212;
+  --card-dark: #1e1e1e;
+  --input-dark: #2c2c2c;
+  --yellow-primary: #FFD369;
+  --yellow-secondary: #E6BE5A;
+  --text-light: #FFFFFF;
+  --text-gray: #AAAAAA;
+  --text-dark: #333333;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
-  background-color: #121212;
-  color: #fff;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
+  line-height: 1.6;
 }
 
+/* AUTH CONTAINER */
 .auth-container {
-  background-color: #1e1e1e;
-  padding: 40px;
-  border-radius: 10px;
+  background-color: var(--card-dark);
+  padding: 2.5rem;
+  border-radius: 12px;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  max-width: 420px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 211, 105, 0.1);
+  margin: 20px;
 }
 
 .auth-container h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color: #ffd369; /* Pastel sarı */
+  margin-bottom: 1.8rem;
+  color: var(--yellow-primary);
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
+/* FORM ELEMANLARI */
 .input-container {
-  margin-bottom: 15px;
+  position: relative;
+  margin-bottom: 1.2rem;
+  animation: fadeSlideIn 0.6s ease forwards;
+  opacity: 0;
 }
 
 .input-container input {
   width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 5px;
-  background-color: #2c2c2c;
-  color: #fff;
-  font-size: 14px;
+  padding: 0.9rem 1.2rem;
+  padding-right: 2.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background-color: var(--input-dark);
+  color: var(--text-light);
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.input-container input:focus {
+  outline: none;
+  border-color: var(--yellow-primary);
+  box-shadow: 0 0 0 3px rgba(255, 211, 105, 0.2);
 }
 
 .input-container input::placeholder {
-  color: #aaa;
+  color: var(--text-gray);
+  opacity: 0.7;
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  background-color: #ffd369; /* Pastel sarı */
-  color: #000;
+/* TOGGLE BUTONLARI */
+.toggle-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--yellow-primary);
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+  background: none;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 10px;
-}
-
-button:hover {
-  background-color: #e6be5a;
-}
-
-a {
-  color: #ffd369;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  gap: 10px;
-  font-size: 13px;
-  color: #ccc;
-}
-
-.input-container {
-  position: relative;
-}
-
-.toggle-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  font-size: 18px;
-  user-select: none;
-  width: 24px;
-  height: 24px;
-  line-height: 24px;
-  text-align: center;
-  pointer-events: auto;
-  color: #ccc;
-}
-
-.toggle-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  font-size: 20px;
-  user-select: none;
-  transition: transform 0.2s ease, color 0.2s ease;
+  padding: 0;
 }
 
 .toggle-icon:hover {
-  transform: translateY(-50%) scale(1.2);
-  color: #ffd700; /* Pastel sarı gibi */
+  transform: translateY(-50%) scale(1.1);
+  color: var(--yellow-secondary);
 }
 
-/* Giriş animasyonu */
+/* ŞİFRE UYARISI */
+.password-requirements {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-gray);
+}
+
+/* CHECKBOX */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--text-gray);
+  animation: fadeSlideIn 0.6s ease forwards;
+  opacity: 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--yellow-primary);
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.checkbox-container input[type="checkbox"]:checked {
+  background-color: var(--yellow-primary);
+}
+
+.checkbox-container input[type="checkbox"]:checked::after {
+  content: '\2713';
+  position: absolute;
+  color: var(--text-dark);
+  font-size: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+}
+
+.checkbox-container label a {
+  color: var(--yellow-primary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.checkbox-container label a:hover {
+  text-decoration: underline;
+}
+
+/* BUTON */
+button[type="submit"] {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: var(--yellow-primary);
+  color: var(--text-dark);
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.8rem;
+  animation: fadeSlideIn 0.6s ease forwards;
+  opacity: 0;
+}
+
+button[type="submit"]:hover {
+  background-color: var(--yellow-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 211, 105, 0.3);
+}
+
+button[type="submit"]:active {
+  transform: translateY(0);
+}
+
+/* FOOTER LINK */
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  animation: fadeSlideIn 0.6s ease forwards;
+  opacity: 0;
+}
+
+.auth-footer a {
+  color: var(--yellow-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+  color: var(--yellow-secondary);
+}
+
+/* TOAST BİLDİRİMLERİ */
+#toast-container {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+}
+
+.toast.success {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32);
+}
+
+.toast.error {
+  background: linear-gradient(135deg, #F44336, #C62828);
+}
+
+.toast i {
+  font-size: 1.2rem;
+}
+
+/* ANİMASYONLAR */
 @keyframes fadeSlideIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -126,13 +246,18 @@ a:hover {
   }
 }
 
-/* Bütün input-container, checkbox ve butonlara uygulayalım */
-.auth-container form > * {
-  animation: fadeSlideIn 0.6s ease forwards;
-  opacity: 0;
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
-/* Her biri sırasıyla biraz gecikmeli gelsin */
+/* ELEMANLARA ANİMASYON GECİKMESİ */
 .auth-container form > *:nth-child(1) { animation-delay: 0.1s; }
 .auth-container form > *:nth-child(2) { animation-delay: 0.2s; }
 .auth-container form > *:nth-child(3) { animation-delay: 0.3s; }
@@ -143,20 +268,18 @@ a:hover {
 .auth-container form > *:nth-child(8) { animation-delay: 0.8s; }
 .auth-container form > *:nth-child(9) { animation-delay: 0.9s; }
 
-.password-requirements {
-  font-size: 12px;
-  color: #888;
-  margin-top: 5px;
+/* RESPONSIVE AYARLAR */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 1.8rem;
+    margin: 15px;
+  }
+  
+  .auth-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  button[type="submit"] {
+    padding: 0.8rem;
+  }
 }
-
-.toggle-icon {
-  font-size: 12px;
-  cursor: pointer;
-  color: ##f2c94c;
-  text-decoration: underline;
-}
-
-.toggle-icon:hover {
-  color: ##f2c94c;
-}
-
