@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+signup.html <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ArtistArt | Kayıt Ol</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <style>
     :root {
       --primary: #6e45e2;
@@ -248,13 +247,6 @@
       to { transform: translateX(0); opacity: 1; }
     }
     
-    /* reCAPTCHA styling */
-    .g-recaptcha {
-      margin: 15px 0;
-      display: flex;
-      justify-content: center;
-    }
-    
     @media (max-width: 768px) {
       .auth-container {
         padding: 30px 20px;
@@ -293,10 +285,6 @@
         <input type="date" id="birthDate" placeholder="Doğum Tarihi" required min="1900-01-01" max="2020-12-31" />
         <i class="fas fa-calendar-day input-icon"></i>
       </div>
-      
-      <!-- reCAPTCHA -->
-      <div class="g-recaptcha" data-sitekey="6LfpWiArAAAAAIdDw6Kfr0m9nfcNM0QCccBhY2cR"></div>
-      
       <div class="checkbox-container">
         <input type="checkbox" id="acceptPrivacy" required />
         <label for="acceptPrivacy">Gizlilik koşullarını kabul ediyorum. <a href="https://artistart.netlify.app/verification" target="_blank">Gizlilik Koşulları</a></label>
@@ -357,16 +345,9 @@
       }
     });
 
-    // Form submission with reCAPTCHA validation
+    // Firebase signup
     document.getElementById('signupForm').addEventListener('submit', async function (event) {
       event.preventDefault();
-      
-      // Validate reCAPTCHA
-      const recaptchaResponse = grecaptcha.getResponse();
-      if (!recaptchaResponse) {
-        showToast('Lütfen reCAPTCHA doğrulamasını tamamlayın', 'error');
-        return;
-      }
 
       const fullName = document.getElementById('fullName').value;
       const email = document.getElementById('signupEmail').value;
@@ -387,19 +368,11 @@
       }
 
       try {
-        // Verify reCAPTCHA with your backend
-        const recaptchaVerified = await verifyRecaptcha(recaptchaResponse);
-        if (!recaptchaVerified) {
-          showToast('reCAPTCHA doğrulaması başarısız', 'error');
-          return;
-        }
-
         const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
         await firebase.firestore().collection('users').doc(userCredential.user.uid).set({
           fullName,
           email,
           nickname,
-          birthDate,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
@@ -423,24 +396,6 @@
         showToast(errorMessage, 'error');
       }
     });
-
-    // Function to verify reCAPTCHA with your backend
-    async function verifyRecaptcha(token) {
-      try {
-        const response = await fetch('/verify-recaptcha', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ token })
-        });
-        const data = await response.json();
-        return data.success;
-      } catch (error) {
-        console.error('reCAPTCHA verification error:', error);
-        return false;
-      }
-    }
 
     // Improved toast function
     function showToast(message, type) {
@@ -466,8 +421,36 @@
     }
   </script>
 
-  <!-- Firebase scripts -->
+  
+
   <script type="module" src="firebase/firebase-Config.js"></script>
   <script type="module" src="firebase/signup.js"></script>
 </body>
 </html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="styles.css">
+<!-- Diğer form elemanları -->
+<form id="signup-form">
+
+  <script src="https://www.google.com/recaptcha/api.js"></script>
+  <script>
+    function onSubmit(token) {
+      document.getElementById("demo-form").submit();
+    }
+  </script>
+  <button class="g-recaptcha" 
+  data-sitekey="6LfpWiArAAAAAIdDw6Kfr0m9nfcNM0QCccBhY2cR" 
+  data-callback='onSubmit' 
+  data-action='submit'>Submit</button>
+  <script src="6LfpWiArAAAAAIdDw6Kfr0m9nfcNM0QCccBhY2cR"></script>
+
+  <script>
+    function onClick(e) {
+      e.preventDefault();
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LfpWiArAAAAAIdDw6Kfr0m9nfcNM0QCccBhY2cR', {action: 'submit'}).then(function(token) {
+            // Add your logic to submit to your backend server here.
+        });
+      });
+    }
+</script>
