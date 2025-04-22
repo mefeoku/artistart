@@ -1,3 +1,17 @@
+// Firebase modüllerini import edin (firebase-config.js'den export edilenler)
+import { 
+  auth,
+  db,
+  createUserWithEmailAndPassword,
+  sendEmailVerification
+} from './firebase-config.js';
+import { 
+  doc, 
+  setDoc, 
+  serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+
+// Şifre göster/gizle fonksiyonları
 const togglePassword = document.getElementById('togglePassword');
 const passwordInput = document.getElementById('signupPassword');
 const toggleConfirm = document.getElementById('toggleConfirmPassword');
@@ -6,64 +20,95 @@ const confirmInput = document.getElementById('confirmPassword');
 togglePassword.addEventListener('click', () => {
   if (passwordInput.type === 'password') {
     passwordInput.type = 'text';
-    togglePassword.textContent = 'Şifreyi Gizle';
+    togglePassword.innerHTML = '<i class="fas fa-eye-slash"></i>';
   } else {
     passwordInput.type = 'password';
-    togglePassword.textContent = 'Şifreyi Göster';
+    togglePassword.innerHTML = '<i class="fas fa-eye"></i>';
   }
 });
 
 toggleConfirm.addEventListener('click', () => {
   if (confirmInput.type === 'password') {
     confirmInput.type = 'text';
-    toggleConfirm.textContent = 'Şifreyi Gizle';
+    toggleConfirm.innerHTML = '<i class="fas fa-eye-slash"></i>';
   } else {
     confirmInput.type = 'password';
-    toggleConfirm.textContent = 'Şifreyi Göster';
+    toggleConfirm.innerHTML = '<i class="fas fa-eye"></i>';
   }
 });
 
-// Firebase signup
+// Firebase kayıt işlemi
 document.getElementById('signupForm').addEventListener('submit', async function (event) {
   event.preventDefault();
 
   const fullName = document.getElementById('fullName').value;
   const email = document.getElementById('signupEmail').value;
   const password = document.getElementById('signupPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
   const nickname = document.getElementById('nickname').value;
-  // Doğum tarihi, Firebase'e gönderilmeyecek.
-  // const birthDate = document.getElementById('birthDate').value; // Bu satırı kaldırdık
+
+  // Şifre doğrulama
+  if (password !== confirmPassword) {
+    showToast('Şifreler eşleşmiyor!', 'error');
+    return;
+  }
 
   try {
-    const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-    await firebase.firestore().collection('users').doc(userCredential.user.uid).set({
+    // 1. Kullanıcı oluştur
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    
+    // 2. E-posta doğrulama gönder
+    await sendEmailVerification(userCredential.user);
+    
+    // 3. Firestore'a kullanıcı bilgilerini kaydet
+    await setDoc(doc(db, "users", userCredential.user.uid), {
       fullName,
       email,
-      nickname
-      // Doğum tarihi burada kaydedilmiyor
+      nickname,
+      createdAt: serverTimestamp()
     });
 
-    showToast('Kullanıcı başarıyla eklendi!', 'success');
+    showToast('✅ Kayıt başarılı! Doğrulama e-postanı kontrol et.', 'success');
+    
+    // 3 saniye sonra yönlendir
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 3000);
+
   } catch (error) {
-    showToast(`Kullanıcı eklenemedi: ${error.message}`, 'error');
+    console.error("Kayıt hatası:", error);
+    
+    let errorMessage = "Kayıt sırasında hata oluştu";
+    switch(error.code) {
+      case 'auth/email-already-in-use':
+        errorMessage = "Bu e-posta zaten kullanımda";
+        break;
+      case 'auth/weak-password':
+        errorMessage = "Şifre en az 6 karakter olmalı";
+        break;
+      case 'auth/invalid-email':
+        errorMessage = "Geçersiz e-posta formatı";
+        break;
+      default:
+        errorMessage = error.message;
+    }
+    
+    showToast(`❌ ${errorMessage}`, 'error');
   }
 });
 
-// Function to show toast
+// Toast bildirim fonksiyonu
 function showToast(message, type) {
   const toastContainer = document.getElementById('toast-container');
   const toast = document.createElement('div');
-  toast.textContent = message;
-  toast.style.backgroundColor = type === 'success' ? 'green' : 'red';
-  toast.style.color = 'white';
-  toast.style.padding = '10px 20px';
-  toast.style.marginBottom = '10px';
-  toast.style.borderRadius = '5px';
-  toast.style.fontSize = '16px';
-
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <i class="fas fa-${type === 'success' ? 'check' : 'exclamation'}-circle"></i>
+    <span>${message}</span>
+  `;
   toastContainer.appendChild(toast);
 
   setTimeout(() => {
     toast.remove();
-  }, 5000); // Remove toast after 5 seconds
+  }, 5000);
 }
