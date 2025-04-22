@@ -1,66 +1,47 @@
-// Firebase modüllerini import edin (firebase-config.js'den export edilenler)
 import { 
-  auth,
-  db,
-  createUserWithEmailAndPassword,
-  sendEmailVerification
-} from './firebase-config.js';
-import { 
+  auth, 
+  db, 
+  createUserWithEmailAndPassword, 
+  sendEmailVerification,
   doc, 
   setDoc, 
   serverTimestamp 
-} from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+} from './firebase-config.js';
 
-// Şifre göster/gizle fonksiyonları
-const togglePassword = document.getElementById('togglePassword');
-const passwordInput = document.getElementById('signupPassword');
-const toggleConfirm = document.getElementById('toggleConfirmPassword');
-const confirmInput = document.getElementById('confirmPassword');
+// Şifre Toggle Fonksiyonu
+const setupPasswordToggle = () => {
+  const togglePassword = document.getElementById('togglePassword');
+  const passwordInput = document.getElementById('signupPassword');
+  const toggleConfirm = document.getElementById('toggleConfirmPassword');
+  const confirmInput = document.getElementById('confirmPassword');
 
-togglePassword.addEventListener('click', () => {
-  if (passwordInput.type === 'password') {
-    passwordInput.type = 'text';
-    togglePassword.innerHTML = '<i class="fas fa-eye-slash"></i>';
-  } else {
-    passwordInput.type = 'password';
-    togglePassword.innerHTML = '<i class="fas fa-eye"></i>';
-  }
-});
+  [togglePassword, toggleConfirm].forEach((toggle, i) => {
+    toggle.addEventListener('click', () => {
+      const input = i === 0 ? passwordInput : confirmInput;
+      const icon = toggle.querySelector('i');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+    });
+  });
+};
 
-toggleConfirm.addEventListener('click', () => {
-  if (confirmInput.type === 'password') {
-    confirmInput.type = 'text';
-    toggleConfirm.innerHTML = '<i class="fas fa-eye-slash"></i>';
-  } else {
-    confirmInput.type = 'password';
-    toggleConfirm.innerHTML = '<i class="fas fa-eye"></i>';
-  }
-});
-
-// Firebase kayıt işlemi
-document.getElementById('signupForm').addEventListener('submit', async function (event) {
-  event.preventDefault();
-
-  const fullName = document.getElementById('fullName').value;
+// Kayıt Formu İşlemi
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
   const email = document.getElementById('signupEmail').value;
   const password = document.getElementById('signupPassword').value;
-  const confirmPassword = document.getElementById('confirmPassword').value;
+  const fullName = document.getElementById('fullName').value;
   const nickname = document.getElementById('nickname').value;
 
-  // Şifre doğrulama
-  if (password !== confirmPassword) {
-    showToast('Şifreler eşleşmiyor!', 'error');
-    return;
-  }
-
   try {
-    // 1. Kullanıcı oluştur
+    // 1. Kullanıcı Oluştur
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     
-    // 2. E-posta doğrulama gönder
+    // 2. E-posta Doğrulama Gönder
     await sendEmailVerification(userCredential.user);
     
-    // 3. Firestore'a kullanıcı bilgilerini kaydet
+    // 3. Firestore'a Kaydet
     await setDoc(doc(db, "users", userCredential.user.uid), {
       fullName,
       email,
@@ -68,37 +49,27 @@ document.getElementById('signupForm').addEventListener('submit', async function 
       createdAt: serverTimestamp()
     });
 
-    showToast('✅ Kayıt başarılı! Doğrulama e-postanı kontrol et.', 'success');
-    
-    // 3 saniye sonra yönlendir
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 3000);
+    showToast('✅ Kayıt başarılı! Doğrulama e-postanız gönderildi.', 'success');
+    setTimeout(() => window.location.href = "index.html", 3000);
 
   } catch (error) {
-    console.error("Kayıt hatası:", error);
-    
-    let errorMessage = "Kayıt sırasında hata oluştu";
-    switch(error.code) {
-      case 'auth/email-already-in-use':
-        errorMessage = "Bu e-posta zaten kullanımda";
-        break;
-      case 'auth/weak-password':
-        errorMessage = "Şifre en az 6 karakter olmalı";
-        break;
-      case 'auth/invalid-email':
-        errorMessage = "Geçersiz e-posta formatı";
-        break;
-      default:
-        errorMessage = error.message;
-    }
-    
-    showToast(`❌ ${errorMessage}`, 'error');
+    handleFirebaseError(error);
   }
 });
 
-// Toast bildirim fonksiyonu
-function showToast(message, type) {
+// Hata Yönetimi
+const handleFirebaseError = (error) => {
+  console.error("Firebase Hatası:", error);
+  const errorMap = {
+    'auth/email-already-in-use': 'Bu e-posta zaten kullanımda',
+    'auth/weak-password': 'Şifre en az 6 karakter olmalı',
+    'auth/invalid-email': 'Geçersiz e-posta formatı'
+  };
+  showToast(`❌ ${errorMap[error.code] || error.message}`, 'error');
+};
+
+// Toast Bildirimi
+const showToast = (message, type) => {
   const toastContainer = document.getElementById('toast-container');
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
@@ -107,8 +78,10 @@ function showToast(message, type) {
     <span>${message}</span>
   `;
   toastContainer.appendChild(toast);
+  setTimeout(() => toast.remove(), 5000);
+};
 
-  setTimeout(() => {
-    toast.remove();
-  }, 5000);
-}
+// Sayfa Yüklenince Çalışacaklar
+document.addEventListener('DOMContentLoaded', () => {
+  setupPasswordToggle();
+});
