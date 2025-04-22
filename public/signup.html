@@ -421,6 +421,8 @@
     }
   </script>
 
+  
+
   <script type="module" src="firebase/firebase-Config.js"></script>
   <script type="module" src="firebase/signup.js"></script>
 </body>
@@ -430,16 +432,25 @@
 <!-- Diğer form elemanları -->
 <form id="signup-form">
 
-  <div class="g-recaptcha" data-sitekey="6LfpWiArAAAAAIdDw6Kfr0m9nfcNM0QCccBhY2cR"></div>
+  <script src="https://www.google.com/recaptcha/api.js"></script>
+  <script>
+    function onSubmit(token) {
+      document.getElementById("demo-form").submit();
+    }
+  </script>
+  <button class="g-recaptcha" 
+  data-sitekey="6LfpWiArAAAAAIdDw6Kfr0m9nfcNM0QCccBhY2cR" 
+  data-callback='onSubmit' 
+  data-action='submit'>Submit</button>
+  <script src="6LfpWiArAAAAAIdDw6Kfr0m9nfcNM0QCccBhY2cR"></script>
 
-  <button type="submit">Gönder</button>
-</form>
-
-<!-- reCAPTCHA Script -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-<head>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- CSS -->
-  <link rel="stylesheet" href="signup.css">
-</head>
+  <script>
+    function onClick(e) {
+      e.preventDefault();
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LfpWiArAAAAAIdDw6Kfr0m9nfcNM0QCccBhY2cR', {action: 'submit'}).then(function(token) {
+            // Add your logic to submit to your backend server here.
+        });
+      });
+    }
+</script>
