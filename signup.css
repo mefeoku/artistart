@@ -1,0 +1,216 @@
+/* SIGNUP.CSS - KARANLIK TEMA + PASTEL SARI */
+:root {
+    --bg-dark: #0D0D0D; /* Siyah arkaplan */
+    --card-dark: #1A1A1A; /* Form arkaplan */
+    --input-dark: #262626; /* Input arkaplan */
+    --yellow-primary: #FFEE93; /* Pastel sarı */
+    --yellow-hover: #F9DC5C; /* Hover rengi */
+    --text-light: #F0F0F0; /* Beyaz yazı */
+    --text-gray: #AAAAAA; /* Gri yazı */
+    --error-red: #FF6B6B; /* Hata rengi */
+  }
+  
+  /* TEMEL YAPI */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(255,238,147,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(255,238,147,0.03) 0%, transparent 50%);
+  }
+  
+  /* FORM KONTEYNER */
+  .auth-container {
+    background-color: var(--card-dark);
+    padding: 2.5rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    border: 1px solid rgba(255,238,147,0.1);
+    backdrop-filter: blur(8px);
+  }
+  
+  .auth-container h2 {
+    text-align: center;
+    margin-bottom: 1.8rem;
+    color: var(--yellow-primary);
+    font-size: 1.8rem;
+  }
+  
+  /* INPUT ALANLARI */
+  .input-container {
+    position: relative;
+    margin-bottom: 1.5rem;
+  }
+  
+  .input-container input {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: var(--input-dark);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .input-container input:focus {
+    outline: none;
+    border-color: var(--yellow-primary);
+    box-shadow: 0 0 0 3px rgba(255,238,147,0.2);
+  }
+  
+  /* ŞİFRE TOGGLE */
+  .toggle-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--yellow-primary);
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+  }
+  
+  .toggle-icon:hover {
+    color: var(--yellow-hover);
+  }
+  
+  .password-requirements {
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    margin-top: 6px;
+    display: block;
+  }
+  
+  /* CHECKBOX */
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    gap: 10px;
+  }
+  
+  .checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--yellow-primary);
+    cursor: pointer;
+  }
+  
+  .checkbox-container label {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+  }
+  
+  .checkbox-container a {
+    color: var(--yellow-primary);
+    text-decoration: none;
+  }
+  
+  .checkbox-container a:hover {
+    text-decoration: underline;
+  }
+  
+  /* BUTON */
+  button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: var(--yellow-primary);
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: var(--yellow-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255,238,147,0.3);
+  }
+  
+  /* FOOTER LINK */
+  .auth-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: var(--text-gray);
+    font-size: 0.9rem;
+  }
+  
+  .auth-footer a {
+    color: var(--yellow-primary);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .auth-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* TOAST BİLDİRİMLERİ */
+  #toast-container {
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    z-index: 9999;
+  }
+  
+  .toast {
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    color: white;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  .toast.success {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+  }
+  
+  .toast.error {
+    background: linear-gradient(135deg, #FF6B6B, #C62828);
+  }
+  
+  .toast i {
+    font-size: 1.2rem;
+  }
+  
+  /* ANİMASYON */
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* MOBİL UYUMLU */
+  @media (max-width: 480px) {
+    .auth-container {
+      padding: 1.8rem;
+      width: 85%;
+    }
+    
+    button[type="submit"] {
+      padding: 12px;
+    }
+  }
